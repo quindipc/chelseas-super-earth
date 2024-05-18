@@ -1,4 +1,5 @@
-# Chelsea's Earth
+# Chelsea's Super Earth
+
 This is a practice project of creating earth in threejs and nextjs and documenting my struggles along the way.
 
 ## Problems Encountered
@@ -29,10 +30,20 @@ const textureLoader = new THREE.TextureLoader();
 const earthTexture = textureLoader.load(earthTextureImageUrl);
 ```
 
+### Creating the lights material
+
+When creating a new material to overlay the earth like the lights material, adding an opacity can help offset the low quality image that is used and make the lights not stand out as much.
+
+````const lightsMaterial = new THREE.MeshBasicMaterial({
+     map: lightsTexture,
+     blending: THREE.AdditiveBlending,
+     opacity: 0.4,
+   });```
+
 ## Attributions
 
-https://planetpixelemporium.com/earth.html
-https://www.youtube.com/watch?v=FntV9iEJ0tU&ab_channel=RobotBobby
+Images taken frm: [Planet Pixel Emporium](https://planetpixelemporium.com/earth.html)
+Three.js Tutorial using HTML & JS from [Robot Bobby](https://www.youtube.com/watch?v=FntV9iEJ0tU&ab_channel=RobotBobby)
 
 
 ## Getting Started
@@ -47,7 +58,7 @@ yarn dev
 pnpm dev
 # or
 bun dev
-```
+````
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
@@ -69,4 +80,3 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-

@@ -6,9 +6,11 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import getStarfield from "../getStarfield";
 
 import earthTextureImage from "../assets/00_earthmap1k.jpg";
+import lightsTextureImage from "../assets/03_earthlights1k.jpg";
 
 // Extract the URL of the image - note: adding this fixes the GET http://localhost:3000/[object%20Object] 404 (Not Found) problem
 const earthTextureImageUrl = earthTextureImage.src;
+const lightsTextureImageUrl = lightsTextureImage.src;
 
 export default function Home() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -50,25 +52,23 @@ export default function Home() {
     // Texture loading
     const textureLoader = new THREE.TextureLoader();
     const earthTexture = textureLoader.load(earthTextureImageUrl);
-    // const lightsTexture = textureLoader.load(lightsTextureImageUrl)
+    const lightsTexture = textureLoader.load(lightsTextureImageUrl);
 
-    // Create the lightsMat material
-    const lightsMat = new THREE.MeshBasicMaterial({
-      color: 0x00ff00,
-      transparent: true,
-      opacity: 0.6,
-      // map: new THREE.TextureLoader().load("../"),
+    // Creating materials & mesh
+    const detail = 6;
+    const geometry = new THREE.IcosahedronGeometry(1, detail);
+    const earthMaterial = new THREE.MeshStandardMaterial({ map: earthTexture });
+    const earthMesh = new THREE.Mesh(geometry, earthMaterial);
+    const lightsMaterial = new THREE.MeshBasicMaterial({
+      map: lightsTexture,
+      blending: THREE.AdditiveBlending,
+      opacity: 0.4,
     });
-  
-    
-    // Creating material, mesh
-    const geometry = new THREE.IcosahedronGeometry(1, 12);
-    const material = new THREE.MeshStandardMaterial({ map: earthTexture });
-    const earthMesh = new THREE.Mesh(geometry, material);
-    const lightsMesh = new THREE.Mesh(geometry, lightsMat);
-    // Add earthMesh to earthGroup
+    const lightsMesh = new THREE.Mesh(geometry, lightsMaterial);
+
+    // Add
     earthGroup.add(earthMesh);
-    scene.add(lightsMesh);
+    earthGroup.add(lightsMesh);
 
     camera.position.z = 5;
 
@@ -76,7 +76,8 @@ export default function Home() {
     const animate = () => {
       requestAnimationFrame(animate);
 
-      earthGroup.rotation.y += 0.002;
+      earthMesh.rotation.y += 0.002;
+      lightsMesh.rotation.y += 0.002;
 
       controls.update();
       renderer.render(scene, camera);
@@ -105,7 +106,7 @@ export default function Home() {
       <div className="mx-auto max-w-7xl p-6 lg:px-8">
         <div className="mx-auto  lg:mx-0">
           <h2 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
-            Chelsea's Earth
+            Chelsea's Super Earth
           </h2>
           <p className="mt-6 text-lg leading-8 text-gray-300">
             Welcome to my model of Earth. Use the mouse to rotate the Earth.
