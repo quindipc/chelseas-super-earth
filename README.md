@@ -2,6 +2,7 @@
 
 This is a practice project of creating earth in threejs and nextjs and documenting my struggles along the way.
 
+## Screenshots
 ![Earth with stars](regular.png)
 ![Earth with lights](lights.png)!
 
@@ -41,7 +42,8 @@ When creating a new material to overlay the earth like the lights material, addi
      map: lightsTexture,
      blending: THREE.AdditiveBlending,
      opacity: 0.4,
-   });```
+   });
+```
 
 ## Attributions
 
