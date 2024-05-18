@@ -38,7 +38,8 @@ const earthTexture = textureLoader.load(earthTextureImageUrl);
 
 When creating a new material to overlay the earth like the lights material, adding an opacity can help offset the low quality image that is used and make the lights not stand out as much.
 
-````const lightsMaterial = new THREE.MeshBasicMaterial({
+```
+const lightsMaterial = new THREE.MeshBasicMaterial({
      map: lightsTexture,
      blending: THREE.AdditiveBlending,
      opacity: 0.4,
