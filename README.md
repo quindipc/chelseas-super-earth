@@ -2,6 +2,9 @@
 
 This is a practice project of creating earth in threejs and nextjs and documenting my struggles along the way.
 
+![Earth with stars](regular.png)
+![Earth with lights](lights.png)
+
 ## Problems Encountered
 
 ### Importing Image Texture Problem
