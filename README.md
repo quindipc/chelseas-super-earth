@@ -1,4 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Chelsea's Earth
+This is a practice project of creating earth in threejs and nextjs and documenting my struggles along the way.
+
+## Problems Encountered
+
+### Importing Image Texture Problem
+
+When you import an image in a Next.js project, especially using Next.js's next/image module, the imported value is not a direct URL string pointing to the image file. Instead, it's an object containing metadata about the image, including its URL (src), dimensions (height and width), and other properties.
+
+You might get this error:
+
+`GET http://localhost:3000/[object%20Object] 40(Not Found)`
+
+To use the imported image with TextureLoader, you need to extract the URL of the image from the imported object. This URL is stored in the src property of the imported image object.
+
+Once you have extracted the URL of the image, you can pass it to TextureLoader.load() to load the image file and create a texture. This ensures that TextureLoader receives a valid URL string as input.
+
+```
+// Import the image path
+import earthTextureImage from "../assets/00_earthmap1k.jpg";
+
+// Extract the URL of the image
+const earthTextureImageUrl = earthTextureImage.src;
+
+// Create a texture loader
+const textureLoader = new THREE.TextureLoader();
+
+// Load the texture using the image URL
+const earthTexture = textureLoader.load(earthTextureImageUrl);
+```
+
+## Attributions
+
+https://planetpixelemporium.com/earth.html
+https://www.youtube.com/watch?v=FntV9iEJ0tU&ab_channel=RobotBobby
+
 
 ## Getting Started
 
@@ -35,7 +70,3 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
-## Attributions
-
-https://planetpixelemporium.com/earth.html
-https://www.youtube.com/watch?v=FntV9iEJ0tU&ab_channel=RobotBobby

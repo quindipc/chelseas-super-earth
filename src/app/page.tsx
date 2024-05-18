@@ -4,6 +4,10 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
+import earthTextureImage from "../assets/00_earthmap1k.jpg";
+// Extract the URL of the image - note: adding this fixes the GET http://localhost:3000/[object%20Object] 404 (Not Found) problem
+const earthTextureImageUrl = earthTextureImage.src;
+
 
 export default function Home() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -38,9 +42,13 @@ export default function Home() {
     directionalLight.position.set(5, 5, 5); // Position the light
     scene.add(directionalLight);
 
+    // Texture loading
+    const textureLoader = new THREE.TextureLoader();
+    const earthTexture = textureLoader.load(earthTextureImageUrl);
+
     // Creating geometry, material, mesh
-    const geometry = new THREE.IcosahedronGeometry(1,12);
-    const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+    const geometry = new THREE.IcosahedronGeometry(1, 12);
+    const material = new THREE.MeshStandardMaterial({ map: earthTexture });
     const earthMesh = new THREE.Mesh(geometry, material);
     scene.add(earthMesh);
 
@@ -75,16 +83,18 @@ export default function Home() {
     };
   }, []);
 
-  return <div ref={mountRef}>
-    <div className="mx-auto max-w-7xl p-6 lg:px-8">
+  return (
+    <div ref={mountRef}>
+      <div className="mx-auto max-w-7xl p-6 lg:px-8">
         <div className="mx-auto  lg:mx-0">
           <h2 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
             Chelsea's Earth
           </h2>
           <p className="mt-6 text-lg leading-8 text-gray-300">
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        </p>
+          </p>
         </div>
       </div>
-  </div>;
-};
+    </div>
+  );
+}
