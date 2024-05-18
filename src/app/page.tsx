@@ -4,15 +4,18 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import getStarfield from "../getStarfield";
+import { getFresnelMat } from "@/getFresnelMat";
 
 import earthTextureImage from "../assets/00_earthmap1k.jpg";
 import lightsTextureImage from "../assets/03_earthlights1k.jpg";
 import cloudTextureImage from "../assets/04_earthcloudmap.jpg";
+import cloudtransTextureImage from "../assets/05_earthcloudmaptrans.jpg";
 
 // Extract the URL of the image - note: adding this fixes the GET http://localhost:3000/[object%20Object] 404 (Not Found) problem
 const earthTextureImageUrl = earthTextureImage.src;
 const lightsTextureImageUrl = lightsTextureImage.src;
 const cloudTextureImageUrl = cloudTextureImage.src;
+const cloudtransTextureImageUrl = cloudtransTextureImage.src;
 
 export default function Home() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -57,9 +60,10 @@ export default function Home() {
     const earthTexture = textureLoader.load(earthTextureImageUrl);
     const lightsTexture = textureLoader.load(lightsTextureImageUrl);
     const cloudTexture = textureLoader.load(cloudTextureImageUrl);
+    const cloudtransTexture = textureLoader.load(cloudtransTextureImageUrl);
 
     // Creating materials & mesh
-    const detail = 6;
+    const detail = 10;
     const geometry = new THREE.IcosahedronGeometry(1, detail);
 
     const earthMaterial = new THREE.MeshStandardMaterial({ map: earthTexture });
@@ -79,10 +83,16 @@ export default function Home() {
       transparent: true,
       blending: THREE.AdditiveBlending,
       opacity: 0.1,
+      alphaMap: cloudtransTexture,
     });
     const cloudMesh = new THREE.Mesh(geometry, cloudMaterial);
     cloudMesh.scale.setScalar(1.005);
     earthGroup.add(cloudMesh);
+
+    const fresnelMat = getFresnelMat();
+    const glowMesh = new THREE.Mesh(geometry, fresnelMat);
+    glowMesh.scale.setScalar(1.01);
+    earthGroup.add(glowMesh);
 
     camera.position.z = 5;
 
@@ -93,6 +103,8 @@ export default function Home() {
       earthMesh.rotation.y += 0.002;
       lightsMesh.rotation.y += 0.002;
       cloudMesh.rotation.y += 0.002;
+      glowMesh.rotation.y += 0.002;
+      stars.rotation.y -= 0.0002;
 
       controls.update();
       renderer.render(scene, camera);
