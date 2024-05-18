@@ -7,10 +7,12 @@ import getStarfield from "../getStarfield";
 
 import earthTextureImage from "../assets/00_earthmap1k.jpg";
 import lightsTextureImage from "../assets/03_earthlights1k.jpg";
+import cloudTextureImage from "../assets/04_earthcloudmap.jpg";
 
 // Extract the URL of the image - note: adding this fixes the GET http://localhost:3000/[object%20Object] 404 (Not Found) problem
 const earthTextureImageUrl = earthTextureImage.src;
 const lightsTextureImageUrl = lightsTextureImage.src;
+const cloudTextureImageUrl = cloudTextureImage.src;
 
 export default function Home() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -53,22 +55,33 @@ export default function Home() {
     const textureLoader = new THREE.TextureLoader();
     const earthTexture = textureLoader.load(earthTextureImageUrl);
     const lightsTexture = textureLoader.load(lightsTextureImageUrl);
+    const cloudTexture = textureLoader.load(cloudTextureImageUrl);
 
     // Creating materials & mesh
     const detail = 6;
     const geometry = new THREE.IcosahedronGeometry(1, detail);
+
     const earthMaterial = new THREE.MeshStandardMaterial({ map: earthTexture });
     const earthMesh = new THREE.Mesh(geometry, earthMaterial);
+    earthGroup.add(earthMesh);
+
     const lightsMaterial = new THREE.MeshBasicMaterial({
       map: lightsTexture,
       blending: THREE.AdditiveBlending,
       opacity: 0.4,
     });
     const lightsMesh = new THREE.Mesh(geometry, lightsMaterial);
-
-    // Add
-    earthGroup.add(earthMesh);
     earthGroup.add(lightsMesh);
+
+    const cloudMaterial = new THREE.MeshBasicMaterial({
+      map: cloudTexture,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      opacity: 0.1,
+    });
+    const cloudMesh = new THREE.Mesh(geometry, cloudMaterial);
+    cloudMesh.scale.setScalar(1.005)
+    earthGroup.add(cloudMesh);
 
     camera.position.z = 5;
 
@@ -78,6 +91,7 @@ export default function Home() {
 
       earthMesh.rotation.y += 0.002;
       lightsMesh.rotation.y += 0.002;
+      cloudMesh.rotation.y += 0.002;
 
       controls.update();
       renderer.render(scene, camera);
@@ -106,7 +120,7 @@ export default function Home() {
       <div className="mx-auto max-w-7xl p-6 lg:px-8">
         <div className="mx-auto  lg:mx-0">
           <h2 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
-            Chelsea's Super Earth
+            Chelsea&apos;s Super Earth
           </h2>
           <p className="mt-6 text-lg leading-8 text-gray-300">
             Welcome to my model of Earth. Use the mouse to rotate the Earth.
