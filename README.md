@@ -53,4 +53,4 @@ Three.js Tutorial using HTML & JS from [Robot Bobby](https://www.youtube.com/wat
 
 ## Link
 
-[View the project here](#) 
+[View the project here](https://chelseas-super-earth.vercel.app/) 

@@ -18,6 +18,7 @@ export default function Home() {
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const mountRefCurrent = mountRef.current;
     //   Create scene
     const scene = new THREE.Scene();
 
@@ -80,7 +81,7 @@ export default function Home() {
       opacity: 0.1,
     });
     const cloudMesh = new THREE.Mesh(geometry, cloudMaterial);
-    cloudMesh.scale.setScalar(1.005)
+    cloudMesh.scale.setScalar(1.005);
     earthGroup.add(cloudMesh);
 
     camera.position.z = 5;
@@ -110,7 +111,7 @@ export default function Home() {
 
     return () => {
       window.removeEventListener("resize", handleWindowResize);
-      mountRef.current?.removeChild(renderer.domElement);
+      mountRefCurrent?.removeChild(renderer.domElement);
       controls.dispose();
     };
   }, []);
