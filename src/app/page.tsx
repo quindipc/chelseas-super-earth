@@ -1,40 +1,90 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+
 export default function Home() {
-  return (
-    <>
-      <div className="mx-auto max-w-7xl p-6 lg:px-8">
+  const mountRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    //   Create scene
+    const scene = new THREE.Scene();
+
+    // Create camera with perspective
+    const camera = new THREE.PerspectiveCamera(
+      75, // FOV
+      window.innerWidth / window.innerHeight,
+      0.1, // Near clipping plane
+      1000, // Far clipping plane
+    );
+
+    // Create a WebGL renderer and set its size
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    mountRef.current?.appendChild(renderer.domElement);
+
+    // Initialize OrbitControls to enable camera movement with mouse
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    // Add light
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Soft white light
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Bright white light
+    directionalLight.position.set(5, 5, 5); // Position the light
+    scene.add(directionalLight);
+
+    // Creating geometry, material, mesh
+    const geometry = new THREE.IcosahedronGeometry(1,12);
+    const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+    const earthMesh = new THREE.Mesh(geometry, material);
+    scene.add(earthMesh);
+
+    camera.position.z = 5;
+
+    // Handle animate loop function
+    const animate = () => {
+      requestAnimationFrame(animate);
+
+      earthMesh.rotation.x += 0.001;
+      earthMesh.rotation.y += 0.002;
+
+      controls.update();
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    // Handle window resizing
+    const handleWindowResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+
+    window.addEventListener("resize", handleWindowResize);
+
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+      mountRef.current?.removeChild(renderer.domElement);
+      controls.dispose();
+    };
+  }, []);
+
+  return <div ref={mountRef}>
+    <div className="mx-auto max-w-7xl p-6 lg:px-8">
         <div className="mx-auto  lg:mx-0">
           <h2 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
             Chelsea's Earth
           </h2>
           <p className="mt-6 text-lg leading-8 text-gray-300">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Error ipsum
-            consequatur, amet nihil consectetur, provident tempore accusantium
-            praesentium libero maiores deserunt iste officia cumque possimus
-            nulla ratione veniam, obcaecati corporis.
-          </p>
-          <a
-            href="/earth"
-            className="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
-          >
-            View Here
-            <svg
-              className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 14 10"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M1 5h12m0 0L9 1m4 4L9 9"
-              />
-            </svg>
-          </a>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        </p>
         </div>
       </div>
-    </>
-  );
-}
+  </div>;
+};
